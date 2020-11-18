@@ -10,10 +10,10 @@ import java.util.Scanner;
 
 public class ClientTryOut {
     MyConsumer myConsumer;
-    MyProducer muProducer ;
+    MyProducer muProducer;
 
     public ClientTryOut() {
-        myConsumer =  new MyConsumer();
+        myConsumer = new MyConsumer();
         muProducer = new MyProducer();
     }
 

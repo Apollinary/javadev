@@ -8,13 +8,14 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class MyConsumer {
-    private KafkaConsumer<String, String> consumer;
+    private final KafkaConsumer<String, String> consumer;
 
     public MyConsumer() {
         Properties config = new Properties();
         config.put("bootstrap.servers", "localhost:9092");
         config.put("group.id", "test");
-        config.put("enable.auto.commit", "true");
+        config.put("auto.offset.reset", "earliest");
+        config.put("enable.auto.commit", "false");
         config.put("auto.commit.interval.ms", "1000");
         config.put("session.timeout.ms", "30000");
         config.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
@@ -22,12 +23,13 @@ public class MyConsumer {
         consumer = new KafkaConsumer<>(config);
     }
 
-    public void subscribe(String topicName){
+    public void subscribe(String topicName) {
         consumer.subscribe(Collections.singleton(topicName));
+
     }
 
     public void readMessageFromTopic() {
-        ConsumerRecords<String, String> records = consumer.poll(50);
+        ConsumerRecords<String, String> records = consumer.poll(200);
         for (ConsumerRecord<String, String> record : records) {
             System.out.printf("offset = %d, key = %s, value = %s\n", record.offset(), record.key(), record.value());
         }

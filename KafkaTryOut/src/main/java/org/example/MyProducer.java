@@ -7,7 +7,6 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import java.util.Properties;
 
 public class MyProducer {
-    private int messageCounter;
     private final Producer<String, String> producer;
 
     public MyProducer() {
@@ -24,11 +23,11 @@ public class MyProducer {
     }
 
     public void sendMessageToTopic(String topicName, String messageText) {
-        producer.send(new ProducerRecord<>(topicName, Integer.toString(messageCounter++), messageText));
+        producer.send(new ProducerRecord<>(topicName, messageText, messageText));
         System.out.println("Message sent successfully");
     }
 
-    public void close(){
+    public void close() {
         producer.close();
     }
 }
