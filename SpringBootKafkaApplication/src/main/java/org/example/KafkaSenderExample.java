@@ -14,9 +14,7 @@ class KafkaSenderExample {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    void sendMessage(String topicName, String message) {
+    public void sendMessage(String topicName, String message) {
         kafkaTemplate.send(topicName, message);
-        System.out.println("Sent successfully");
     }
-
 }

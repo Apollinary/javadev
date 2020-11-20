@@ -1,21 +1,19 @@
 package org.example;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.stereotype.Component;
 
-@EnableKafka
-@SpringBootApplication
+@Component
 public class KafkaListenerExample {
 
-    final String topicFrom = "Topic2";
-    final String topicTo = "Topic3";
+    private final String topicFrom = "Topic2";
+    private final String topicTo = "Topic3";
 
     @Autowired
-    KafkaSenderExample kafkaSenderExample;
+    private KafkaSenderExample kafkaSenderExample;
 
     public KafkaListenerExample(KafkaSenderExample kafkaSenderExample) {
         this.kafkaSenderExample = kafkaSenderExample;
