@@ -2,24 +2,34 @@ package org.example;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.config.KafkaListenerContainerFactory;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.kafka.inbound.KafkaMessageDrivenChannelAdapter;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.messaging.MessageChannel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
 public class KafkaConsumerConfig {
+    private final String topicFrom = "Topic1";
 
     @Bean
-    public KafkaListenerContainerFactory<?> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(3);
-        factory.getContainerProperties().setPollTimeout(3000);
-        return factory;
+    public KafkaMessageDrivenChannelAdapter<String, String>
+    adapter(KafkaMessageListenerContainer<String, String> container) {
+        KafkaMessageDrivenChannelAdapter<String, String> kafkaMessageDrivenChannelAdapter =
+                new KafkaMessageDrivenChannelAdapter<>(container, KafkaMessageDrivenChannelAdapter.ListenerMode.record);
+        kafkaMessageDrivenChannelAdapter.setOutputChannel(kafkaChannel());
+        return kafkaMessageDrivenChannelAdapter;
+    }
+
+    @Bean
+    public KafkaMessageListenerContainer<String, String> container() throws Exception {
+        ContainerProperties properties = new ContainerProperties(topicFrom);
+        return new KafkaMessageListenerContainer<>(consumerFactory(), properties);
     }
 
     @Bean
@@ -35,5 +45,10 @@ public class KafkaConsumerConfig {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         return props;
+    }
+
+    @Bean
+    public MessageChannel kafkaChannel() {
+        return new DirectChannel();
     }
 }
